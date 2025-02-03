@@ -1,0 +1,23 @@
+{
+  "name": "easy",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@jamtools/core": "^0.14.1",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-router-dom": "^6.29.0",
+    "springboard": "^0.14.1",
+    "springboard-cli": "^0.14.1"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.8"
+  }
+}
