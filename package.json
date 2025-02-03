@@ -14,10 +14,13 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^6.29.0",
+    "robotjs": "^0.6.0",
     "springboard": "^0.14.1",
     "springboard-cli": "^0.14.1"
   },
   "devDependencies": {
-    "@types/react": "^19.0.8"
+    "@types/node": "^22.13.0",
+    "@types/react": "^19.0.8",
+    "tsx": "^4.19.2"
   }
 }
