@@ -9,11 +9,25 @@ const BUTTON_MIDI_NUMBERS = {
     Record: 3,
 } as const;
 
+// @platform "node"
+const toggleArm = async () => {
+    const {runRobotJsToggleArmAndTrack} = await import('./robot');
+    await runRobotJsToggleArmAndTrack();
+};
+// @platform end
+
 springboard.registerModule('Easy', {}, async (moduleAPI) => {
     const macroModule = moduleAPI.deps.module.moduleRegistry.getModule('macro');
     const outputMacro = await macroModule.createMacro(moduleAPI, 'output', 'musical_keyboard_output', {});
 
+    const toggleArmState = await moduleAPI.statesAPI.createPersistentState('toggleArmState', false);
+
     const pressedAction = moduleAPI.createAction('pressedAction', {}, async (args: {actionName: keyof typeof BUTTON_MIDI_NUMBERS}) => {
+        if (toggleArmState.getState()) {
+            await toggleArm();
+            toggleArmState.setState(false);
+        }
+
         const midiNumber = BUTTON_MIDI_NUMBERS[args.actionName];
         for (const eventType of ['noteon', 'noteoff'] as const) {
             outputMacro.send({
@@ -22,6 +36,10 @@ springboard.registerModule('Easy', {}, async (moduleAPI) => {
                 channel: 1,
             });
         }
+    });
+
+    const pressedToggleArmCheckbox = moduleAPI.createAction('toggleArm', {}, async () => {
+        toggleArmState.setState(state => !state);
     });
 
     moduleAPI.registerRoute('/', {}, () => {
@@ -34,6 +52,20 @@ springboard.registerModule('Easy', {}, async (moduleAPI) => {
             </button>
         ));
 
+        const toggleArmCheckbox = (
+            <div>
+                <label>
+                    Toggle Arm
+                </label>
+                <input
+                    type='checkbox'
+                    checked={toggleArmState.useState()}
+                    onChange={() => pressedToggleArmCheckbox({})}
+                    style={{display: 'inline-block', fontSize: '60px', margin: '10px', width: '80%', maxWidth: '500px'}}
+                />
+            </div>
+        );
+
         return (
             <div>
                 <details>
@@ -43,6 +75,7 @@ springboard.registerModule('Easy', {}, async (moduleAPI) => {
                 </details>
                 <div style={{display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center'}}>
                     {buttons}
+                    {toggleArmCheckbox}
                 </div>
             </div>
         );
